@@ -117,6 +117,30 @@ npm run dev
 
 详细的数据库设计、ETL 流程、SQL 优化案例与 AI 问答系统设计请参阅 `技术报告_V2.0.md`。
 
+
+## 作者与贡献者
+
+- **Leedl137** - 项目作者、数据库设计与后端开发
+- **wangr9577@gmail.com** - 项目贡献者
+
+## 系统截图
+
+### 数据可视化大屏
+
+![全馆每日入馆流量走势](report_assets/image_ca72eb.png)
+
+![读者活跃度分布](report_assets/image_a05cf7.png)
+
+![深度分析 - 借阅状态与座位预约](report_assets/image_a71ac4.png)
+
+### 系统架构图
+
+![系统分层架构](report_assets/architecture_layers.png)
+
+![AI 智能问答流程](report_assets/ai_flow_diagram.png)
+
+![ETL 数据流](report_assets/etl_pipeline.png)
+
 ## License
 
 MIT License
