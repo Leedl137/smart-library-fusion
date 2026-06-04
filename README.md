@@ -123,23 +123,180 @@ npm run dev
 - **Leedl137** - 项目作者、数据库设计与后端开发
 - **wangr9577@gmail.com** - 项目贡献者
 
-## 系统截图
+## 系统架构图
 
-### 数据可视化大屏
+### 分层架构
 
-![全馆每日入馆流量走势](report_assets/image_ca72eb.png)
+`mermaid
+flowchart TB
+    subgraph 表现层 [表现层 Presentation Layer]
+        A1[Vue 3 + Element Plus]
+        A2[ECharts 5 可视化]
+        A3[数据大屏 / AI对话]
+    end
 
-![读者活跃度分布](report_assets/image_a05cf7.png)
+    subgraph 接入层 [接入层 API Gateway]
+        B1[FastAPI Router]
+        B2[JWT 认证]
+        B3[RBAC+ABAC 权限]
+        B4[SQL Guard 校验]
+    end
 
-![深度分析 - 借阅状态与座位预约](report_assets/image_a71ac4.png)
+    subgraph 业务层 [业务层 Service Layer]
+        C1[图书借阅管理]
+        C2[门禁/座位管理]
+        C3[AI NL2SQL 问答]
+        C4[通知推送服务]
+    end
 
-### 系统架构图
+    subgraph 数据层 [数据层 Data Layer]
+        D1[(MySQL 8.0 InnoDB)]
+        D2[SQLAlchemy 2.0 ORM]
+        D3[1545万条真实数据]
+    end
 
-![系统分层架构](report_assets/architecture_layers.png)
+    表现层 --> 接入层 --> 业务层 --> 数据层
+`
 
-![AI 智能问答流程](report_assets/ai_flow_diagram.png)
+### AI 智能问答流程
 
-![ETL 数据流](report_assets/etl_pipeline.png)
+`mermaid
+flowchart LR
+    U[用户自然语言提问] --> P[Prompt 注入约束]
+    P --> L[大语言模型 NL2SQL]
+    L --> S[SQL Guard 正则校验]
+    S -->|通过| R[只读账户执行 + LIMIT]
+    S -->|拦截| E[返回安全提示]
+    R --> V[结果渲染 / 图表推断]
+
+    subgraph 四层安全防护
+        direction TB
+        F1[Prompt 约束]
+        F2[正则黑名单]
+        F3[只读账户]
+        F4[LIMIT 限制]
+    end
+`
+
+### ETL 数据流
+
+`mermaid
+flowchart LR
+    subgraph 数据源 [原始数据源]
+        S1[图书数据.csv 45万]
+        S2[读者数据.csv 5.7万]
+        S3[借阅数据.csv 192万]
+        S4[门禁日志.txt 893万]
+        S5[座位日志.txt 394万]
+        S6[学者库 Excel 7.9万]
+    end
+
+    E[ETL 引擎<br/>提取→清洗→转换→加载]
+
+    subgraph 目标库 [MySQL 目标库]
+        T1[books]
+        T2[users]
+        T3[borrow_records]
+        T4[access_logs]
+        T5[seat_logs]
+        T6[articles]
+    end
+
+    S1 & S2 & S3 & S4 & S5 & S6 --> E
+    E --> T1 & T2 & T3 & T4 & T5 & T6
+
+    E -.->|小表| I1[executemany]
+    E -.->|大表| I2[LOAD DATA INFILE]
+`
+
+### 数据库 ER 图
+
+`mermaid
+erDiagram
+    users ||--o{ borrow_records : borrows
+    users ||--o{ access_logs : visits
+    users ||--o{ seat_logs : reserves
+    books ||--o{ borrow_records : borrowed_in
+    books ||--|| book_inventory : has
+    books }o--|| categories : belongs_to
+    reading_rooms ||--o{ seat_logs : contains
+
+    users {
+        int id PK
+        varchar uid UK
+        varchar real_name
+        varchar department
+        varchar gender
+        varchar enroll_year
+        varchar reader_type
+        int access_count
+        int borrow_count
+    }
+
+    books {
+        varchar isbn PK
+        varchar barcode UK
+        varchar title
+        varchar authors
+        varchar publisher
+        int publish_year
+        varchar category_code FK
+        varchar call_no
+        varchar language
+        varchar doc_type
+        int total_copies
+        int available_copies
+    }
+
+    borrow_records {
+        varchar borrow_id PK
+        int user_id FK
+        varchar isbn FK
+        datetime borrow_time
+        datetime due_time
+        datetime return_time
+        varchar status
+        int overdue_days
+        int renew_count
+    }
+
+    access_logs {
+        bigint log_id PK
+        int user_id FK
+        datetime visit_time
+        varchar location
+        varchar access_type
+    }
+
+    seat_logs {
+        bigint log_id PK
+        int user_id FK
+        varchar room_no FK
+        varchar seat_no
+        datetime start_time
+        datetime end_time
+    }
+
+    categories {
+        varchar code PK
+        varchar name
+        int level
+        varchar parent_code
+    }
+
+    reading_rooms {
+        varchar room_no PK
+        varchar room_name
+        varchar location
+        int capacity
+        varchar status
+    }
+
+    book_inventory {
+        varchar isbn PK,FK
+        int stock
+    }
+`
 
 ## License
 
