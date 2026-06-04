@@ -139,7 +139,7 @@ npm run dev
 
 ### 数据库 ER 图
 
-`mermaid
+```mermaid
 erDiagram
     users ||--o{ borrow_records : borrows
     users ||--o{ access_logs : visits
@@ -224,7 +224,7 @@ erDiagram
         varchar isbn PK,FK
         int stock
     }
-`
+```
 
 ## License
 
