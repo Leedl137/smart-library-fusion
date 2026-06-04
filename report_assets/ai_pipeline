@@ -1,0 +1,23 @@
+// AI Pipeline
+digraph {
+	bgcolor=white fontname=SimHei rankdir=LR
+	node [fontname=SimHei fontsize=11 shape=box style="rounded,filled"]
+	edge [fontname=SimHei fontsize=10]
+	U [label="用户提问" color="#475569" fillcolor="#dbeafe"]
+	SK [label="Skill 注入\nadvanced_ai_skill()" color="#475569" fillcolor="#f3e8ff"]
+	SP [label="System Prompt\nSchema + 安全规则" color="#475569" fillcolor="#f3e8ff"]
+	LLM [label="大语言模型\nDeepSeek API" color="#475569" fillcolor="#dcfce7"]
+	CL [label="Markdown 清洗\n正则去除代码块" color="#475569" fillcolor="#fef3c7"]
+	SG [label="SQL Guard\nvalidate_readonly_sql\nenforce_limit" color="#475569" fillcolor="#fee2e2"]
+	EX [label="MySQL 执行\nSQLAlchemy text()" color="#475569" fillcolor="#e0e7ff"]
+	IC [label="图表推断\n_infer_chart()" color="#475569" fillcolor="#fce7f3"]
+	FE [label="前端渲染\n表格 / ECharts" color="#475569" fillcolor="#dbeafe"]
+	U -> SK [label="" color="#64748b"]
+	SK -> SP [label="" color="#64748b"]
+	SP -> LLM [label="" color="#64748b"]
+	LLM -> CL [label=raw_sql color="#64748b"]
+	CL -> SG [label="" color="#64748b"]
+	SG -> EX [label=safe_sql color="#64748b"]
+	EX -> IC [label=rows color="#64748b"]
+	IC -> FE [label=chart_config color="#64748b"]
+}
