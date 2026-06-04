@@ -113,6 +113,12 @@ npm run dev
 - **SQL 查询优化**：覆盖索引、最左前缀、执行计划分析，慢查询从 97s 优化至 3s
 - **安全机制**：四层 SQL 防护（Prompt 约束 + 正则黑名单 + 只读账户 + LIMIT 限制）
 
+## 前端截图
+
+| 数据大屏 | 复杂行为挖掘 | 模型配置 |
+|---------|------------|---------|
+| ![数据大屏](report_assets/screenshot_dashboard.png) | ![复杂行为挖掘](report_assets/screenshot_advanced_mining.png) | ![模型配置](report_assets/screenshot_model_config.png) |
+
 ## 技术报告
 
 详细的数据库设计、ETL 流程、SQL 优化案例与 AI 问答系统设计请参阅 `技术报告_V2.0.md`。
